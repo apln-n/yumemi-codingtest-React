@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import PropTypes from "prop-types";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const apiKey = "p9t4mVKpr6vhGAwius3ldgTVMk9YNa1nARFDSLmr";
@@ -8,7 +9,7 @@ const apiKey = "p9t4mVKpr6vhGAwius3ldgTVMk9YNa1nARFDSLmr";
 const getPrefsList = () => {
   const path = "https://opendata.resas-portal.go.jp/api/v1/prefectures";
   const request = new XMLHttpRequest();
-  request.open('GET',path,false)
+  request.open("GET", path, false);
   request.setRequestHeader("X-API-KEY", apiKey);
   request.send(null);
   const prefs = JSON.parse(request.response);
@@ -17,11 +18,11 @@ const getPrefsList = () => {
     {"message":null,"result":[{"prefCode":1,"prefName":"北海道"},{"prefCode":2...}...]}
   */
   let prefsList = [];
-  for(let i=0;i<prefs.result.length;i++){
+  for (let i = 0; i < prefs.result.length; i++) {
     prefsList.push(prefs.result[i].prefName);
   }
   return prefsList;
-}
+};
 
 const Title = () => {
   return <h1>総人口推移グラフ</h1>;
@@ -32,17 +33,24 @@ const CheckBox = (props) => {
   const pref = props.pref;
   return (
     <div>
-      <input type="checkbox" id={pref+"CheckBox"} name={pref} />
-      <label for={pref+"CheckBox"}>{pref}</label>
+      <input type="checkbox" id={pref + "CheckBox"} name={pref} />
+      <label htmlFor={pref + "CheckBox"}>{pref}</label>
     </div>
   );
-}
+};
+CheckBox.propTypes = {
+  pref: PropTypes.string,
+};
 
 const CheckBoxes = () => {
   return (
     <div>
       <h3>都道府県</h3>
-      <div>{getPrefsList().map((pref,key) => <CheckBox pref={pref} key={key} />)}</div>
+      <div>
+        {getPrefsList().map((pref, key) => (
+          <CheckBox pref={pref} key={key} />
+        ))}
+      </div>
     </div>
   );
 };
