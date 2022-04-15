@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import PropTypes from "prop-types";
 
@@ -29,12 +29,29 @@ const CheckBox = (props) => {
   const pref = props.pref;
   const code = pref.prefCode;
   const name = pref.prefName;
-  return (
-    <>
-      <input type="checkbox" id={name + "CheckBox"} name={name} data-code={code} />
-      <label htmlFor={name + "CheckBox"}>{name+" "}</label>
-    </>
-  );
+  const [checked, setChecked] = useState(false);
+  const [element, setElement] = useState(<></>);
+  React.useEffect(() => {
+    const interval = setInterval(()=>{
+      setElement(
+        <>
+          <input
+            type="checkbox"
+            id={name + "CheckBox"}
+            name={name}
+            data-code={code}
+            data-checked={checked}
+            onChange={() => {
+              setChecked(!checked);
+            }}
+          />
+          <label htmlFor={name + "CheckBox"}>{name + " "}</label>
+        </>
+      );
+    }, 10);
+    return () => clearInterval(interval);
+  });
+  return element;
 };
 CheckBox.propTypes = {
   pref: PropTypes.object,
@@ -54,10 +71,26 @@ const CheckBoxes = () => {
 };
 
 const Graph = () => {
+  const [prefsListForGraph, setPrefs] = useState([]); //prefsListForGraph[]の中身のフォーマットはgetPrefs()の返り値と同じ
+  React.useEffect(() => {
+    const interval = setInterval(()=>{
+      const checkBoxes = document.querySelectorAll("input[type='checkbox']");
+      let prefsList = [];
+      for (let i = 0; i < checkBoxes.length; i++) {
+        const isChecked = checkBoxes[i].dataset.checked == "true" ? true : false; //属性なのでstring型になっている
+        if (isChecked) {
+          prefsList.push(checkBoxes[i].name);
+          //prefsList.push({"prefCode":checkBoxes[i].dataset.code, "prefName":checkBoxes[i].name});
+        }
+      }
+      setPrefs(prefsList);
+    }, 10);
+    return () => clearInterval(interval);
+  });
   return (
     <div>
       <h2>Graph</h2>
-      <div></div>
+      <div>{prefsListForGraph}</div>
     </div>
   );
 };
