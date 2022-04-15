@@ -5,8 +5,8 @@ import PropTypes from "prop-types";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const apiKey = "p9t4mVKpr6vhGAwius3ldgTVMk9YNa1nARFDSLmr";
 
-//都道府県一覧のリスト
-const getPrefsList = () => {
+//都道府県一覧のリスト[{"prefCode":1,"prefName":"北海道"}, ...]
+const getPrefs = () => {
   const path = "https://opendata.resas-portal.go.jp/api/v1/prefectures";
   const request = new XMLHttpRequest();
   request.open("GET", path, false);
@@ -17,11 +17,7 @@ const getPrefsList = () => {
     JSONのフォーマット:
     {"message":null,"result":[{"prefCode":1,"prefName":"北海道"},{"prefCode":2...}...]}
   */
-  let prefsList = [];
-  for (let i = 0; i < prefs.result.length; i++) {
-    prefsList.push(prefs.result[i].prefName);
-  }
-  return prefsList;
+  return prefs.result;
 };
 
 const Title = () => {
@@ -31,15 +27,17 @@ const Title = () => {
 //各都道府県のチェックボックス。<input>のidと<label>のforの文字列を合わせることでグループ化。
 const CheckBox = (props) => {
   const pref = props.pref;
+  const code = pref.prefCode;
+  const name = pref.prefName;
   return (
     <>
-      <input type="checkbox" id={pref + "CheckBox"} name={pref} />
-      <label htmlFor={pref + "CheckBox"}>{pref+" "}</label>
+      <input type="checkbox" id={name + "CheckBox"} name={name} data-code={code} />
+      <label htmlFor={name + "CheckBox"}>{name+" "}</label>
     </>
   );
 };
 CheckBox.propTypes = {
-  pref: PropTypes.string,
+  pref: PropTypes.object,
 };
 
 const CheckBoxes = () => {
@@ -47,7 +45,7 @@ const CheckBoxes = () => {
     <div>
       <h3>都道府県</h3>
       <div>
-        {getPrefsList().map((pref, key) => (
+        {getPrefs().map((pref, key) => (
           <CheckBox pref={pref} key={key} />
         ))}
       </div>
