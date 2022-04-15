@@ -32,10 +32,10 @@ const Title = () => {
 const CheckBox = (props) => {
   const pref = props.pref;
   return (
-    <div>
+    <>
       <input type="checkbox" id={pref + "CheckBox"} name={pref} />
-      <label htmlFor={pref + "CheckBox"}>{pref}</label>
-    </div>
+      <label htmlFor={pref + "CheckBox"}>{pref+" "}</label>
+    </>
   );
 };
 CheckBox.propTypes = {
