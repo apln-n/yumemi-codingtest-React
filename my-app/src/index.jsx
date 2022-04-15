@@ -12,7 +12,7 @@ const CheckBoxes = () => {
 };
 
 const Graph = () => {
-  return <h2>Graph</h2>;;
+  return <h2>Graph</h2>;
 };
 
 const App = () => {
