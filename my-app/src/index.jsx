@@ -24,14 +24,25 @@ const getPrefsList = () => {
 }
 
 const Title = () => {
-  return <h1>Title</h1>;
+  return <h1>総人口推移グラフ</h1>;
 };
+
+//各都道府県のチェックボックス。<input>のidと<label>のforの文字列を合わせることでグループ化。
+const CheckBox = (props) => {
+  const pref = props.pref;
+  return (
+    <div>
+      <input type="checkbox" id={pref+"CheckBox"} name={pref} />
+      <label for={pref+"CheckBox"}>{pref}</label>
+    </div>
+  );
+}
 
 const CheckBoxes = () => {
   return (
     <div>
-      <h2>CheckBoxes</h2>
-      <div>{getPrefsList()}</div>
+      <h3>都道府県</h3>
+      <div>{getPrefsList().map((pref,key) => <CheckBox pref={pref} key={key} />)}</div>
     </div>
   );
 };
