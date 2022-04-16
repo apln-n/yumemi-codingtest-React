@@ -124,7 +124,7 @@ const Graph = () => {
       /*
         追加処理。
         チェックリストに変化があった時のみAPIを呼び出す。(不必要にAPIを呼び出さない)
-        今回の都道府県のリスト(currentPrefsList)にその都道府県(currentPrefsList[i])が含まれているが、これまでの都道府県のリスト(prefsList)には含まれていない場合。
+        今回の都道府県のリスト(currentPrefsList)にその都道府県(currentPrefsList[i])が含まれているが、これまでの都道府県のリスト(2つのprefsList)には含まれていない場合。
         これまでの都道府県のリストに都道府県を追加し、これまでの都道府県の人口構成のリスト(pops)に都道府県を追加。
       */
       for (let i = 0; i < currentPrefsList.length; i++) {
@@ -136,15 +136,35 @@ const Graph = () => {
           const afterPrefsNameList = [...prefsNameList, pref.prefName];
           setPrefsNameList(afterPrefsNameList);
           console.log(afterPrefsNameList);
-          break;
         }
       }
       /*
         削除処理。
-        これまでの都道府県のリスト(prefsList)にその都道府県(prefsList[i])が含まれているが、今回の都道府県のリスト(currentPrefsList)には含まれていない場合。
+        これまでの都道府県のリスト(2つのprefsList)にその都道府県(prefsCodeList[i]など)が含まれているが、今回の都道府県のリスト(currentPrefsList)には含まれていない場合。
         これまでの都道府県のリストから都道府県を削除し、これまでの都道府県の人口構成のリスト(pops)からその都道府県を削除。
       */
-      //おそらくspliceを使う
+      for (let i = 0; i < prefsCodeList.length; i++) {
+        //削除される可能性のある都道府県の候補
+        const prefCode = prefsCodeList[i];
+        //都道府県を削除するかの判定に用いる
+        let flag = true;
+        for(let j=0;j<currentPrefsList.length;j++){
+          if(currentPrefsList[j].prefCode === prefCode){
+            flag = false;
+            break;
+          }
+        }
+        if(flag){
+          //これまでの都道府県のリスト(prefsCodeList, prefsNameList)から削除。
+          const afterPrefsCodeList = prefsCodeList.filter(code => (code !== prefCode));
+          setPrefsCodeList(afterPrefsCodeList);
+          //prefCodeとprefNameのindex(i)は対応している
+          const prefName = prefsNameList[i];
+          const afterPrefsNameList = prefsNameList.filter(name => (name !== prefName));
+          setPrefsNameList(afterPrefsNameList);
+          console.log(afterPrefsNameList);
+        }
+      }
     }, 10);
     return () => clearInterval(interval);
   });
