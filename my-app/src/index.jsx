@@ -118,15 +118,34 @@ const MyHighChartsGraph = (props) =>{
     let data = [];
     for(let j=0;j<pops[i].data.length;j++){
       const dataPerFiveYear = pops[i].data[j];
+      //実際の人口(数値)だけデータとしてリストに追加(『年』はxAxisで設定)
       data.push(dataPerFiveYear.value)
     }
-    series.push({type: "line", data: data});
+    series.push({name: pops[i].prefName, data: data});
+  }
+  //人口構成データが存在する場合、x軸のデータに対する名前(値)を設定
+  let xCategories = [];
+  if(pops.length > 0){
+    for(let i=0;i<pops[0].data.length;i++){
+      xCategories.push(String(pops[0].data[i].year));
+    }
   }
   const options = {
     title: {
         text: ""
     },
-    series: series
+    series: series,
+    xAxis: {
+      title:{
+        text: "年度"
+      },
+      categories: xCategories
+    },
+    yAxis:{
+      title:{
+        text: "人口数"
+      }
+    }
   };
   return (
     <HighchartsReact
@@ -150,7 +169,6 @@ const Population = () => {
     const interval = setInterval(() => {
       //チェックされている都道府県の一覧を取得
       const currentPrefsList = getCheckedPrefsList();
-      //console.log(currentPrefsList);
       /*
         追加処理。
         チェックリストに変化があった時のみAPIを呼び出す。(不必要にAPIを呼び出さない)
@@ -167,7 +185,6 @@ const Population = () => {
           setPrefsCodeList(afterPrefsCodeList);
           const afterPrefsNameList = [...prefsNameList, pref.prefName];
           setPrefsNameList(afterPrefsNameList);
-          //console.log(afterPrefsNameList);
           //その都道府県の人口構成を取得
           const pop = getPop({
             prefCode: pref.prefCode,
@@ -175,7 +192,6 @@ const Population = () => {
           });
           const afterPops = [...pops, pop];
           setPops(afterPops);
-          console.log(afterPops);
         }
       }
       /*
@@ -206,10 +222,8 @@ const Population = () => {
             (name) => name !== prefName
           );
           setPrefsNameList(afterPrefsNameList);
-          //console.log(afterPrefsNameList);
           const afterPops = pops.filter((pop) => pop !== pops[i]);
           setPops(afterPops);
-          console.log(afterPops);
         }
       }
     }, 10);
