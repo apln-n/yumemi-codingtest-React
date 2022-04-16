@@ -35,26 +35,23 @@ const CheckBox = (props) => {
   const [checked, setChecked] = useState(false);
   const [element, setElement] = useState(<></>);
   React.useEffect(() => {
-    const interval = setInterval(() => {
-      setElement(
-        <>
-          <input
-            type="checkbox"
-            id={name + "CheckBox"}
-            name={name}
-            data-code={code}
-            data-checked={checked}
-            data-pop={null}
-            onChange={() => {
-              setChecked(!checked);
-            }}
-          />
-          <label htmlFor={name + "CheckBox"}>{name + " "}</label>
-        </>
-      );
-    }, 10);
-    return () => clearInterval(interval);
-  });
+    setElement(
+      <>
+        <input
+          type="checkbox"
+          id={name + "CheckBox"}
+          name={name}
+          data-code={code}
+          data-checked={checked}
+          data-pop={null}
+          onChange={() => {
+            setChecked(!checked);
+          }}
+        />
+        <label htmlFor={name + "CheckBox"}>{name + " "}</label>
+      </>
+    );
+  }, [checked]);
   return element;
 };
 CheckBox.propTypes = {
@@ -115,13 +112,21 @@ const getCheckedPrefsList = () => {
 };
 
 const MyHighChartsGraph = (props) =>{
+  const pops = props.pops;
+  let series = [];
+  for(let i=0;i<pops.length;i++){
+    let data = [];
+    for(let j=0;j<pops[i].data.length;j++){
+      const dataPerFiveYear = pops[i].data[j];
+      data.push(dataPerFiveYear.value)
+    }
+    series.push({type: "line", data: data});
+  }
   const options = {
     title: {
-      text: 'My chart'
+        text: ""
     },
-    series: [{
-      data: [1, 2, 3]
-    }]
+    series: series
   };
   return (
     <HighchartsReact
@@ -130,6 +135,9 @@ const MyHighChartsGraph = (props) =>{
     />
   );
 }
+MyHighChartsGraph.propTypes = {
+  pops: PropTypes.array,
+};
 
 const Population = () => {
   //prefsListをCodeListとNameListに分ける。(Object同士で都道府県を比較だとかならずfalseになるため。)
@@ -208,18 +216,14 @@ const Population = () => {
     return () => clearInterval(interval);
   });
 
-  //以下でpopの中身を使ってグラフを作る
+  //以下でpopsの中身を使ってグラフを作る
   React.useEffect(() => {
-    const interval = setInterval(() => {
-      setElement(
-        <div>
-          <h2>Graph</h2>
-          <MyHighChartsGraph pops={pops} />
-        </div>
-      );
-    }, 10);
-    return () => clearInterval(interval);
-  });
+    setElement(
+      <div>
+        <MyHighChartsGraph pops={pops} />
+      </div>
+    );
+  }, [pops]);
 
   //elementは実際の人口構成グラフを表示する部分
   return element;
