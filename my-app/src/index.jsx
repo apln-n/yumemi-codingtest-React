@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import PropTypes from "prop-types";
 
-import Highcharts from 'highcharts';
-import HighchartsReact from 'highcharts-react-official';
+import Highcharts from "highcharts";
+import HighchartsReact from "highcharts-react-official";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const apiKey = "p9t4mVKpr6vhGAwius3ldgTVMk9YNa1nARFDSLmr";
@@ -111,49 +111,44 @@ const getCheckedPrefsList = () => {
   return currentPrefsList;
 };
 
-const MyHighChartsGraph = (props) =>{
+const MyHighChartsGraph = (props) => {
   const pops = props.pops;
   let series = [];
-  for(let i=0;i<pops.length;i++){
+  for (let i = 0; i < pops.length; i++) {
     let data = [];
-    for(let j=0;j<pops[i].data.length;j++){
+    for (let j = 0; j < pops[i].data.length; j++) {
       const dataPerFiveYear = pops[i].data[j];
       //実際の人口(数値)だけデータとしてリストに追加(『年』はxAxisで設定)
-      data.push(dataPerFiveYear.value)
+      data.push(dataPerFiveYear.value);
     }
-    series.push({name: pops[i].prefName, data: data});
+    series.push({ name: pops[i].prefName, data: data });
   }
   //人口構成データが存在する場合、x軸のデータに対する名前(値)を設定
   let xCategories = [];
-  if(pops.length > 0){
-    for(let i=0;i<pops[0].data.length;i++){
+  if (pops.length > 0) {
+    for (let i = 0; i < pops[0].data.length; i++) {
       xCategories.push(String(pops[0].data[i].year));
     }
   }
   const options = {
     title: {
-        text: ""
+      text: "",
     },
     series: series,
     xAxis: {
-      title:{
-        text: "年度"
+      title: {
+        text: "年度",
       },
-      categories: xCategories
+      categories: xCategories,
     },
-    yAxis:{
-      title:{
-        text: "人口数"
-      }
-    }
+    yAxis: {
+      title: {
+        text: "人口数",
+      },
+    },
   };
-  return (
-    <HighchartsReact
-      highcharts={Highcharts}
-      options={options}
-    />
-  );
-}
+  return <HighchartsReact highcharts={Highcharts} options={options} />;
+};
 MyHighChartsGraph.propTypes = {
   pops: PropTypes.array,
 };
