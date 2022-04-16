@@ -72,7 +72,7 @@ const CheckBoxes = () => {
 };
 
 //人口構成のリスト(props.prefsList[]に含まれる都道府県の物に限る)
-const getPops = (pref) => {
+const getPop = (pref) => {
   const path =
     "https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?cityCode=-&prefCode=" +
     pref.prefCode;
@@ -87,7 +87,6 @@ const getPops = (pref) => {
     {"message":null, "result":{"boundaryYear":2015, "data":[{"label":"総人口", "data":[{"year":1980, "value":12817}, {"year":1985, "value": 12707},{...}],[...],[...]}}
     pops内の"data"は辞書のリスト[{"year", "value"}]
   */
-  //console.log(response.result.data[0].data);
   const pop = {
       "prefCode": pref.prefCode,
       "prefName": pref.prefName,
@@ -114,8 +113,9 @@ const Graph = () => {
   //prefsListをCodeListとNameListに分ける。(Object同士で都道府県を比較だとかならずfalseになるため。)
   const [prefsCodeList, setPrefsCodeList] = useState([]);
   const [prefsNameList, setPrefsNameList] = useState([]);
-  // [pop, setPop] = useState([]);
+  const [pops, setPops] = useState([]);
   const [element, setElement] = useState(<></>);
+  //都道府県コードおよび都道府県の追加/削除、都道府県のチェックの有無に応じた人口構成の追加/削除用。
   React.useEffect(() => {
     const interval = setInterval(() => {
       //チェックされている都道府県の一覧を取得
@@ -135,7 +135,12 @@ const Graph = () => {
           setPrefsCodeList(afterPrefsCodeList);
           const afterPrefsNameList = [...prefsNameList, pref.prefName];
           setPrefsNameList(afterPrefsNameList);
-          console.log(afterPrefsNameList);
+          //console.log(afterPrefsNameList);
+          //その都道府県の人口構成を取得
+          const pop = getPop({"prefCode":pref.prefCode, "prefName":pref.prefName});
+          const afterPops = [...pops, pop];
+          setPops(afterPops);
+          console.log(afterPops);
         }
       }
       /*
@@ -158,11 +163,14 @@ const Graph = () => {
           //これまでの都道府県のリスト(prefsCodeList, prefsNameList)から削除。
           const afterPrefsCodeList = prefsCodeList.filter(code => (code !== prefCode));
           setPrefsCodeList(afterPrefsCodeList);
-          //prefCodeとprefNameのindex(i)は対応している
+          //prefCode、prefName、popsのindex(i)は対応している
           const prefName = prefsNameList[i];
           const afterPrefsNameList = prefsNameList.filter(name => (name !== prefName));
           setPrefsNameList(afterPrefsNameList);
-          console.log(afterPrefsNameList);
+          //console.log(afterPrefsNameList);
+          const afterPops = pops.filter(pop => (pop !== pops[i]));
+          setPops(afterPops);
+          console.log(afterPops);
         }
       }
     }, 10);
