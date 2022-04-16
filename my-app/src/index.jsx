@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import PropTypes from "prop-types";
 
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const apiKey = "p9t4mVKpr6vhGAwius3ldgTVMk9YNa1nARFDSLmr";
 
@@ -88,9 +91,9 @@ const getPop = (pref) => {
     pops内の"data"は辞書のリスト[{"year", "value"}]
   */
   const pop = {
-      "prefCode": pref.prefCode,
-      "prefName": pref.prefName,
-      "data": response.result.data[0].data,
+    prefCode: pref.prefCode,
+    prefName: pref.prefName,
+    data: response.result.data[0].data,
   };
   return pop;
 };
@@ -100,16 +103,35 @@ const getCheckedPrefsList = () => {
   let currentPrefsList = [];
   const checkBoxes = document.querySelectorAll("input[type='checkbox']");
   for (let i = 0; i < checkBoxes.length; i++) {
-    const isChecked =
-      checkBoxes[i].dataset.checked == "true" ? true : false; //属性なのでstring型になっている
+    const isChecked = checkBoxes[i].dataset.checked == "true" ? true : false; //属性なのでstring型になっている
     if (isChecked) {
-      currentPrefsList.push({"prefCode":checkBoxes[i].dataset.code, "prefName":checkBoxes[i].name});
+      currentPrefsList.push({
+        prefCode: checkBoxes[i].dataset.code,
+        prefName: checkBoxes[i].name,
+      });
     }
   }
   return currentPrefsList;
+};
+
+const MyHighChartsGraph = (props) =>{
+  const options = {
+    title: {
+      text: 'My chart'
+    },
+    series: [{
+      data: [1, 2, 3]
+    }]
+  };
+  return (
+    <HighchartsReact
+      highcharts={Highcharts}
+      options={options}
+    />
+  );
 }
 
-const Graph = () => {
+const Population = () => {
   //prefsListをCodeListとNameListに分ける。(Object同士で都道府県を比較だとかならずfalseになるため。)
   const [prefsCodeList, setPrefsCodeList] = useState([]);
   const [prefsNameList, setPrefsNameList] = useState([]);
@@ -129,15 +151,20 @@ const Graph = () => {
       */
       for (let i = 0; i < currentPrefsList.length; i++) {
         const pref = currentPrefsList[i];
-        const afterPrefsCodeList = Array.from(new Set([...prefsCodeList, pref.prefCode]));
-        if(prefsCodeList.length !== afterPrefsCodeList.length){
+        const afterPrefsCodeList = Array.from(
+          new Set([...prefsCodeList, pref.prefCode])
+        );
+        if (prefsCodeList.length !== afterPrefsCodeList.length) {
           //これまでの都道府県のリストに含まれていないため、その都道府県をこれまでのリストに(prefCodeとprefNameを分けて)追加。
           setPrefsCodeList(afterPrefsCodeList);
           const afterPrefsNameList = [...prefsNameList, pref.prefName];
           setPrefsNameList(afterPrefsNameList);
           //console.log(afterPrefsNameList);
           //その都道府県の人口構成を取得
-          const pop = getPop({"prefCode":pref.prefCode, "prefName":pref.prefName});
+          const pop = getPop({
+            prefCode: pref.prefCode,
+            prefName: pref.prefName,
+          });
           const afterPops = [...pops, pop];
           setPops(afterPops);
           console.log(afterPops);
@@ -153,22 +180,26 @@ const Graph = () => {
         const prefCode = prefsCodeList[i];
         //都道府県を削除するかの判定に用いる
         let flag = true;
-        for(let j=0;j<currentPrefsList.length;j++){
-          if(currentPrefsList[j].prefCode === prefCode){
+        for (let j = 0; j < currentPrefsList.length; j++) {
+          if (currentPrefsList[j].prefCode === prefCode) {
             flag = false;
             break;
           }
         }
-        if(flag){
+        if (flag) {
           //これまでの都道府県のリスト(prefsCodeList, prefsNameList)から削除。
-          const afterPrefsCodeList = prefsCodeList.filter(code => (code !== prefCode));
+          const afterPrefsCodeList = prefsCodeList.filter(
+            (code) => code !== prefCode
+          );
           setPrefsCodeList(afterPrefsCodeList);
           //prefCode、prefName、popsのindex(i)は対応している
           const prefName = prefsNameList[i];
-          const afterPrefsNameList = prefsNameList.filter(name => (name !== prefName));
+          const afterPrefsNameList = prefsNameList.filter(
+            (name) => name !== prefName
+          );
           setPrefsNameList(afterPrefsNameList);
           //console.log(afterPrefsNameList);
-          const afterPops = pops.filter(pop => (pop !== pops[i]));
+          const afterPops = pops.filter((pop) => pop !== pops[i]);
           setPops(afterPops);
           console.log(afterPops);
         }
@@ -177,15 +208,13 @@ const Graph = () => {
     return () => clearInterval(interval);
   });
 
+  //以下でpopの中身を使ってグラフを作る
   React.useEffect(() => {
     const interval = setInterval(() => {
-      //以下でpopの中身を使ってグラフを作る
       setElement(
         <div>
-          {
-          //map
-            "123456"
-          }
+          <h2>Graph</h2>
+          <MyHighChartsGraph pops={pops} />
         </div>
       );
     }, 10);
@@ -193,12 +222,7 @@ const Graph = () => {
   });
 
   //elementは実際の人口構成グラフを表示する部分
-  return (
-    <div>
-      <h2>Graph</h2>
-      {element}
-    </div>
-  );
+  return element;
 };
 
 const App = () => {
@@ -206,7 +230,7 @@ const App = () => {
     <div>
       <Title />
       <CheckBoxes />
-      <Graph />
+      <Population />
     </div>
   );
 };
