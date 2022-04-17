@@ -123,13 +123,19 @@ const getCheckedPrefsList = () => {
 
 const MyHighChartsGraph = (props) => {
   const pops = props.pops;
+  //今年までのデータのみを表示する
+  const maxYear = Number((new Date()).getFullYear());
   let series = [];
   for (let i = 0; i < pops.length; i++) {
     let data = [];
     for (let j = 0; j < pops[i].data.length; j++) {
       const dataPerFiveYear = pops[i].data[j];
-      //実際の人口(数値)だけデータとしてリストに追加(『年』はxAxisで設定)
-      data.push(dataPerFiveYear.value);
+      if(dataPerFiveYear.year <= maxYear){
+        //実際の人口(数値)だけデータとしてリストに追加(『年』はxAxisで設定)
+        data.push(dataPerFiveYear.value);
+      }else{
+        break;
+      }
     }
     series.push({ name: pops[i].prefName, data: data });
   }
@@ -137,7 +143,11 @@ const MyHighChartsGraph = (props) => {
   let xCategories = [];
   if (pops.length > 0) {
     for (let i = 0; i < pops[0].data.length; i++) {
-      xCategories.push(String(pops[0].data[i].year));
+      if(pops[0].data[i].year <= maxYear){
+        xCategories.push(String(pops[0].data[i].year));
+      }else{
+        break;
+      }
     }
   }
   const options = {
@@ -148,13 +158,22 @@ const MyHighChartsGraph = (props) => {
     xAxis: {
       title: {
         text: "年度",
+        align: "high",
+        style: {
+          fontSize: '14px',
+        },
       },
       categories: xCategories,
     },
     yAxis: {
       title: {
         text: "人口数",
+        align: "high",
+        style: {
+          fontSize: '14px',
+        },
       },
+      allowDecimals: true
     },
   };
   return <HighchartsReact highcharts={Highcharts} options={options} />;
