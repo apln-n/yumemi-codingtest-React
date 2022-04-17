@@ -41,8 +41,12 @@ const CheckBox = (props) => {
   const [checked, setChecked] = useState(false);
   const [element, setElement] = useState(<></>);
   React.useEffect(() => {
+    const liStyle = {
+      display: "inline-block",
+      width: "90px"
+    }
     setElement(
-      <>
+      <li style={liStyle} align={"left"}>
         <input
           type="checkbox"
           id={name + "CheckBox"}
@@ -55,7 +59,7 @@ const CheckBox = (props) => {
           }}
         />
         <label htmlFor={name + "CheckBox"}>{name + " "}</label>
-      </>
+      </li>
     );
   }, [checked]);
   return element;
@@ -68,7 +72,7 @@ const CheckBoxes = () => {
   return (
     <div>
       <div style={{fontWeight:"bold"}}>都道府県</div>
-      <div style={{padding: "10px"}}>
+      <div style={{padding: "10px"}} align={"center"}>
         {getPrefs().map((pref, key) => (
           <CheckBox pref={pref} key={key} />
         ))}
