@@ -32,22 +32,17 @@
 
 
 ### Webアプリのタグ構造
- div
-> h2 (`<Title />` "総人口推移グラフ")
-
-> div (`<CheckBoxes />`)
->> div ("都道府県")
-
->> div
->>> li (`<CheckBox />` 47個ある)
->>>> input (チェックボックス)
-
->>>> label (各都道府県名)
-
-> br
-
-> div (`<Population />`)
->> HighchartsReact (`<MyHighChartsGraph />` グラフの表示)
+- div
+	- h2 (`<Title />` "総人口推移グラフ")
+	- div (`<CheckBoxes />`)
+		- div ("都道府県")
+		- div
+			- li (`<CheckBox />` 47個ある)
+				- input (チェックボックス)
+				- label (各都道府県名)
+	- br
+	- div (`<Population />`)
+		- HighchartsReact (`<MyHighChartsGraph />` グラフの表示)
 
 ### コーディングで注意した点など
 - 関数コンポーネント(クラスを用いていない)。
