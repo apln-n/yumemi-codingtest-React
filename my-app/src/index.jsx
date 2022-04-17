@@ -43,8 +43,8 @@ const CheckBox = (props) => {
   React.useEffect(() => {
     const liStyle = {
       display: "inline-block",
-      width: "90px"
-    }
+      width: "90px",
+    };
     setElement(
       <li style={liStyle} align={"left"}>
         <input
@@ -71,8 +71,8 @@ CheckBox.propTypes = {
 const CheckBoxes = () => {
   return (
     <div>
-      <div style={{fontWeight:"bold", paddingLeft:"20px"}}>都道府県</div>
-      <div style={{padding: "10px"}} align={"center"}>
+      <div style={{ fontWeight: "bold", paddingLeft: "20px" }}>都道府県</div>
+      <div style={{ padding: "10px" }} align={"center"}>
         {getPrefs().map((pref, key) => (
           <CheckBox pref={pref} key={key} />
         ))}
