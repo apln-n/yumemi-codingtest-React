@@ -173,8 +173,14 @@ const MyHighChartsGraph = (props) => {
           fontSize: '14px',
         },
       },
-      allowDecimals: true
     },
+    plotOptions: {
+      series:{
+        marker:{
+          enabled: false
+        }
+      }
+    }
   };
   return <HighchartsReact highcharts={Highcharts} options={options} />;
 };
