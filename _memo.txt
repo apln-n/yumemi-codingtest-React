@@ -2,7 +2,7 @@
 	関数コンポーネント(クラスを使っていない)
 	letなglobal変数を用いないようにした(useStateを用いた)
 	varを用いていない
-	無限ループ回避(useEffectとsetInterval)
+	無限ループ回避(useEffectとsetIntervalとHook)
 	Graph()で、prefsList(要素はdict)をprefsCodeListとprefsnameListに分割することを思いつくまでが大変だった。
 		分割した理由: 
 		分割しない場合において、変数名が異なるが中身が同じObject同士を比較した場合にfalseになるため。また、後の削除処理(filter)の記述が楽になる。
