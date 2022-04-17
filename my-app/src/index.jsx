@@ -24,7 +24,13 @@ const getPrefs = () => {
 };
 
 const Title = () => {
-  return <h1>総人口推移グラフ</h1>;
+  //camelCaseで記述
+  const style = {
+    color: "black",
+    backgroundColor: "#C4C4C4",
+    textAlign: "center",
+  };
+  return <h2 style={style}>総人口推移グラフ</h2>;
 };
 
 //各都道府県のチェックボックス。<input>のidと<label>のforの文字列を合わせることでグループ化。
@@ -61,8 +67,8 @@ CheckBox.propTypes = {
 const CheckBoxes = () => {
   return (
     <div>
-      <h3>都道府県</h3>
-      <div>
+      <div style={{fontWeight:"bold"}}>都道府県</div>
+      <div style={{padding: "10px"}}>
         {getPrefs().map((pref, key) => (
           <CheckBox pref={pref} key={key} />
         ))}
@@ -243,6 +249,7 @@ const App = () => {
     <div>
       <Title />
       <CheckBoxes />
+      <br />
       <Population />
     </div>
   );
